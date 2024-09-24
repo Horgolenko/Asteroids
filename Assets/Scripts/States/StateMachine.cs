@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Utils;
+using Utils.CoroutineUtils;
 
 namespace States
 {
@@ -9,15 +9,22 @@ namespace States
     {
         private readonly Dictionary<Type, AState> _states = new();
         private AState _currentState;
+        private UpdateLine _update;
+        private CoroutineLauncher _coroutineLauncher;
+
+        public static Action<AState> OnStateChanged;
         
-        public StateMachine()
+        public StateMachine(CoroutineLauncher coroutineLauncher)
         {
-            CoroutineLauncher.Play(Update());
+            _coroutineLauncher = coroutineLauncher;
+            _update = new UpdateLine(Update, TimeUtils.FrameDelta);
+            
+            _coroutineLauncher.AddUpdate(_update);
         }
 
         ~StateMachine()
         {
-            CoroutineLauncher.Stop(Update());
+            _coroutineLauncher.RemoveUpdate(_update);
         }
         
         public void AddState<T>(T state) where T : AState
@@ -37,15 +44,13 @@ namespace States
             _currentState?.Exit();
             _currentState = _states[typeof(T)];
             _currentState.Enter();
+
+            OnStateChanged?.Invoke(_currentState);
         }
 
-        private IEnumerator Update()
+        private void Update()
         {
-            while (true)
-            {
-                _currentState?.OnUpdate();
-                yield return null;
-            }
+            _currentState?.OnUpdate();
         }
     }
 }

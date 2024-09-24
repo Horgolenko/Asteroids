@@ -1,5 +1,3 @@
-using Audio;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,13 +26,9 @@ namespace Editor
 
             foreach (var button in buttons)
             {
-                if (!button.TryGetComponent<ButtonAudio>(out var audio))
-                {
-                    button.AddComponent<ButtonAudio>();
-                }
                 if (!button.TryGetComponent<ButtonScale>(out var scale))
                 {
-                    button.AddComponent<ButtonScale>();
+                    button.gameObject.AddComponent<ButtonScale>();
                 }
             }
         }
@@ -43,13 +37,9 @@ namespace Editor
         {
             if (obj is Button button)
             {
-                if (!button.TryGetComponent<ButtonAudio>(out var audio))
-                {
-                    button.AddComponent<ButtonAudio>();
-                }
                 if (!button.TryGetComponent<ButtonScale>(out var scale))
                 {
-                    button.AddComponent<ButtonScale>();
+                    button.gameObject.AddComponent<ButtonScale>();
                 }
             }
         }

@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/Game.unity
+    guid: 1a65d04bcc8a0fe46b58e9a9c1da0352
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: f23add42a3f7cc2489dd628606c39507
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: 9102541a97fe9a948b2287472f9b1920
+  - enabled: 1
+    path: Assets/AsteroidsBelt/Level.unity
+    guid: fbd7f05223895fa4a90a4c09fca7a10c
+  - enabled: 1
+    path: Assets/AsteroidsBelt/Menu.unity
+    guid: 6e0752da32ef73747ad2937522f80b27
   m_configObjects: {}
