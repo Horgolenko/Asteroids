@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.lazysquirrellabs.minmaxrangeattribute": {
+      "version": "https://github.com/lazysquirrellabs/min_max_range_attribute.git?path=Assets/Libraries/MinMaxRangeAttribute#latest",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ee85e6cc1c5515a261186328c6ebead9698385af"
+    },
     "com.unity.2d.animation": {
       "version": "9.1.1",
       "depth": 1,

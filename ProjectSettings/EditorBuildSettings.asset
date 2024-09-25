@@ -20,4 +20,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/AsteroidsBelt/Menu.unity
     guid: 6e0752da32ef73747ad2937522f80b27
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: e089c81f5af53a040830a145803be63a, type: 2}

@@ -1,4 +1,4 @@
-using Mob;
+using Data.Loaders;
 using States;
 using UnityEngine;
 
@@ -9,13 +9,11 @@ namespace Game
         private void Start()
         {
             StateMachine.OnStateChanged += OnStateChanged;
-            MobBase.EnemyKilled += EnemyKilled;
         }
 
         private void OnDestroy()
         {
             StateMachine.OnStateChanged -= OnStateChanged;
-            MobBase.EnemyKilled -= EnemyKilled;
         }
 
         private void OnStateChanged(AState state)
@@ -44,7 +42,7 @@ namespace Game
         
         public void Load()
         {
-
+            DataLoader.Load();
         }
 
         private void Save()

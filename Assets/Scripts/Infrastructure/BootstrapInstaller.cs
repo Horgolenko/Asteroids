@@ -1,25 +1,27 @@
+using Data.Loaders;
 using Game;
-using Mob;
+using Spawners;
 using States;
 using UI;
 using UnityEngine;
 using Utils.CoroutineUtils;
+using Utils.ObjectPool;
 using Zenject;
 
 namespace Infrastructure
 {
     public class BootstrapInstaller : MonoInstaller
     {
-        [SerializeField]
-        private MobPool _mobPool;
-        [SerializeField]
-        private SwitchUI _switchUI;
-        [SerializeField]
-        private GameProvider _gameProvider;
+        [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private SwitchUI _switchUI;
+        [SerializeField] private GameProvider _gameProvider;
         
         public override void InstallBindings()
         {
-            Container.Bind<MobPool>().FromInstance(_mobPool).AsSingle();
+            _gameProvider.Load();
+
+            var objectPool = new ObjectPool(Container);
+            Container.Bind<ObjectPool>().FromInstance(objectPool).AsSingle();
             
             var coroutineLauncher = new CoroutineLauncher();
             Container.Bind<CoroutineLauncher>().FromInstance(coroutineLauncher).AsSingle();
@@ -28,8 +30,6 @@ namespace Infrastructure
             Container.Bind<StateMachine>().FromInstance(stateMachine).AsSingle();
             Container.Bind<ITickable>().To<CoroutineLauncher>().FromResolve();
 
-            _gameProvider.Load();
-            
             Container.Bind<GameProvider>().FromInstance(_gameProvider).AsSingle();
             
             InitStateMachine(stateMachine);
@@ -37,7 +37,7 @@ namespace Infrastructure
         
         private void InitStateMachine(StateMachine gameStateMachine)
         {
-            gameStateMachine.AddState(new GameplayState(gameStateMachine));
+            gameStateMachine.AddState(new GameplayState(gameStateMachine, _enemySpawner));
             gameStateMachine.AddState(new WinState(gameStateMachine, _switchUI));
             gameStateMachine.AddState(new LoseState(gameStateMachine, _switchUI));
             

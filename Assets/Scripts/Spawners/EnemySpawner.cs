@@ -1,124 +1,87 @@
-using System;
 using System.Collections;
-using Game;
-using Mob;
-using TMPro;
+using System.Collections.Generic;
+using Data.Loaders;
+using Entities.Enemy;
 using UnityEngine;
+using Utils.Level;
+using Utils.ObjectPool;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace Spawners
 {
-    public class EnemySpawner : MonoBehaviour, IDamageable
+    public class EnemySpawner : MonoBehaviour
     {
-        private const float MobSpawnDelay = 0.1f;
-        private const float SpawnDelay = 5f;
-        private const int MinAmount = 25;
-        private const int MaxAmount = 45;
+        [SerializeField] private Asteroid _asteroidPrefab;
+        [HideInInspector]
+        [SerializeField] private SpawnSpace[] _spawnSpaces;
 
-        [SerializeField]
-        private int _hitPoints;
-        [SerializeField]
-        private TextMeshProUGUI _text;
-        [SerializeField]
-        private Transform _spawnPosition;
-        [SerializeField]
-        private GameObject _portal;
-        [SerializeField] 
-        private ParticleSystem _particleSystem;
+        private ushort _enemiesAmount;
+        private ObjectPool _objectPool;
+        private readonly List<Asteroid> _enemies = new();
 
-        private int _id;
-        private MobType _mobType;
-        private Coroutine _spawnCoroutine;
-        private Array _mobTypeValues;
-        private MobPool _mobPool;
-        private BoxCollider _collider;
-        private readonly Vector3 _rotation = new(0, 180, 0);
-        private readonly WaitForSeconds _waitMobForSpawn = new(MobSpawnDelay);
-        private readonly WaitForSeconds _waitForSpawn = new(SpawnDelay);
-        private readonly System.Random _random = new();
-
-        public static Action<int> OnDestroyPortal;
-        
         [Inject]
-        private void Construct(MobPool mobPool)
+        private void Construct(ObjectPool objectPool)
         {
-            _mobPool = mobPool;
+            _objectPool = objectPool;
         }
         
-        private void Awake()
+        public void InitialSpawn()
         {
-            _text.text = $"{_hitPoints}";
-            _mobTypeValues = Enum.GetValues(typeof(MobType));
-            _spawnCoroutine = StartCoroutine(SpawnCoroutine());
-            _collider = GetComponent<BoxCollider>();
-        }
-
-        private void OnDestroy()
-        {
-            StopCoroutine();
-        }
-
-        public void Init(int id)
-        {
-            _id = id;
-        }
-        
-        private void StopCoroutine()
-        {
-            if (_spawnCoroutine != null)
-            {
-                StopCoroutine(_spawnCoroutine);
-                _spawnCoroutine = null;
-            }
+            StartCoroutine(SpawnCoroutine());
         }
         
         private IEnumerator SpawnCoroutine()
         {
-            while (true)
-            {
-                yield return _waitForSpawn;
-                _mobType = GetMobType();
-                var spawnAmount = Random.Range(MinAmount, MaxAmount);
-                for (int i = 0; i < spawnAmount; i++)
-                {
-                    Spawn();
-                    yield return _waitMobForSpawn;
-                }
-            }
-        }
+            yield return new WaitForSecondsRealtime(DataLoader.GetSpawnDelay());
 
-        private MobType GetMobType()
-        {
-            return (MobType)_mobTypeValues.GetValue(_random.Next(_mobTypeValues.Length));
+            while (_enemiesAmount < DataLoader.GetMaxEnemies())
+            {
+                Spawn();
+                _enemiesAmount++;
+            }
         }
 
         private void Spawn()
         {
-            var mob = _mobPool.Get(_mobType);
-            mob.transform.position = new Vector3(_spawnPosition.position.x + Random.Range(-0.5f, 0.5f),
-                                                _spawnPosition.position.y,
-                                                _spawnPosition.position.z);
-            mob.transform.rotation = Quaternion.Euler(_rotation);
-            mob.mobData.SetSide(SideType.Enemy);
-            mob.Init(PlayerPosition.Instance.Position());
-            mob.Run();
+            var enemy = _objectPool.GetObject(_asteroidPrefab);
+            enemy.Init(GetSpawnPosition(), DataLoader.GetEnemyData());
+            _enemies.Add(enemy);
         }
 
-        public void Damage()
+        private Vector3 GetSpawnPosition()
         {
-            _hitPoints--;
-            if (_hitPoints > 0)
+            var index = Random.Range(0, _spawnSpaces.Length);
+            Vector3 result;
+            while (true)
             {
-                _text.text = $"{_hitPoints}";
-                return;
+                result = _spawnSpaces[index].GetPosition();
+                bool isUnique = true;
+                for (int i = 0; i < _enemies.Count; i++)
+                {
+                    if (SpaceUtil.IsOverlap(result, _enemies[i].transform.position))
+                    {
+                        isUnique = false;
+                        break;
+                    }
+                }
+                
+                if (isUnique) break;
             }
-
-            OnDestroyPortal?.Invoke(_id);
-            _collider.enabled = false;
-            StopCoroutine();
-            Destroy(_portal);
-            _particleSystem.Play();
+            
+            return result;
         }
+        
+#if UNITY_EDITOR
+        [ContextMenu("GetSpawnSpaces")]
+        private void GetAllBuildings()
+        {
+            _spawnSpaces = GetBuildings<SpawnSpace>();
+        }
+        
+        private T[] GetBuildings<T>() where T : MonoBehaviour
+        {
+            return FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        }
+#endif
     }
 }
