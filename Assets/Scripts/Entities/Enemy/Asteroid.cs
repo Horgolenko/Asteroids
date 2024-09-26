@@ -36,7 +36,7 @@ namespace Entities.Enemy
             _asteroidMover.Init(enemyData.moveSpeed, enemyData.directionChangeFrequency);
             _asteroidMover.StartMoving();
 
-            _asteroidShooter.Init(enemyData.bulletSpeed, enemyData.fireDelay, _asteroidMover);
+            _asteroidShooter.Init(enemyData.bulletSpeed, enemyData.fireDelay);
             _asteroidShooter.StartShooting();
         }
         

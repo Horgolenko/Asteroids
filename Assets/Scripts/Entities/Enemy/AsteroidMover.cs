@@ -42,6 +42,7 @@ namespace Entities.Enemy
         public void Stop()
         {
             _active = false;
+            _rigidbody.velocity = Vector3.zero;
             _coroutineLauncher.RemoveUpdate(_directionChangeLine);
             _directionChangeLine = null;
         }

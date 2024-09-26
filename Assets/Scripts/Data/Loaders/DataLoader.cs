@@ -5,10 +5,10 @@ namespace Data.Loaders
 {
     public static class DataLoader
     {
-        private const string PlayerDataPath = "Data/PlayerData";
+        private const string PlayerDataPath = "Data/PlayerSettings";
         private const string EnemySettingsPath = "Data/EnemySettings";
 
-        private static PlayerData _playerData;
+        private static PlayerSettings _playerSettings;
         private static EnemySettings _enemySettings;
         
         public static void Load()
@@ -18,7 +18,7 @@ namespace Data.Loaders
 
         private static void LoadData()
         {
-            _playerData = Resources.Load(PlayerDataPath) as PlayerData;
+            _playerSettings = Resources.Load(PlayerDataPath) as PlayerSettings;
             _enemySettings = Resources.Load(EnemySettingsPath) as EnemySettings;
         }
 
@@ -41,9 +41,9 @@ namespace Data.Loaders
             return new EnemyData(moveSpeed, bulletSpeed, directionChangeFrequency, fireDelay);
         }
         
-        public static PlayerData GetPlayerData()
+        public static PlayerSettings GetPlayerData()
         {
-            return _playerData;
+            return _playerSettings;
         }
     }
 }

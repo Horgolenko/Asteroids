@@ -7,10 +7,8 @@ namespace Entities.Projectile
     [RequireComponent(typeof(ProjectileMover))]
     public class EnemyProjectile : MonoBehaviour, IPoolable
     {
-        [SerializeField] private Transform _transform;
-        
         private ProjectileMover _projectileMover;
-        private ProjectileCollider _projectileCollider;
+        private EnemyProjectileCollider _enemyProjectileCollider;
         
         public GameObject GameObject => gameObject;
         public event Action<IPoolable> Destroyed;
@@ -19,18 +17,21 @@ namespace Entities.Projectile
         {
             _projectileMover = GetComponent<ProjectileMover>();
             
-            _projectileCollider = GetComponentInChildren<ProjectileCollider>();
-            _projectileCollider.HitWall += OnHitWall;
+            _enemyProjectileCollider = GetComponentInChildren<EnemyProjectileCollider>();
         }
 
-        private void OnDestroy()
+        private void OnEnable()
         {
-            _projectileCollider.HitWall -= OnHitWall;
+            _enemyProjectileCollider.HitWall += OnHitWall;
+        }
+
+        private void OnDisable()
+        {
+            _enemyProjectileCollider.HitWall -= OnHitWall;
         }
 
         public void Init(float bulletSpeed, Vector3 direction)
         {
-            _transform.localPosition = Vector3.zero;
             _projectileMover.Init(bulletSpeed, direction);
             _projectileMover.StartMoving();
         }

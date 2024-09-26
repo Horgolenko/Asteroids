@@ -10,8 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5e0be39ca78ae6438fe314f0690112a, type: 3}
-  m_Name: PlayerData
+  m_Name: PlayerSettings
   m_EditorClassIdentifier: 
-  _maxShotAmount: 0
-  _maxLifeAmount: 0
-  _enemeisToKill: 0
+  _maxAcceleration: 100
+  _maxSpeed: 800
+  _bulletSpeed: 250
+  _maxShotAmount: 5
+  _maxLifeAmount: 3
+  _enemeisToKill: 25

@@ -1,3 +1,4 @@
+using System;
 using Entities.Projectile;
 using UnityEngine;
 using Utils.CoroutineUtils;
@@ -25,11 +26,15 @@ namespace Entities.Enemy
             _coroutineLauncher = coroutineLauncher;
         }
 
-        public void Init(float bulletSpeed, float fireDelay, AsteroidMover asteroidMover)
+        private void Awake()
+        {
+            _asteroidMover = GetComponent<AsteroidMover>();
+        }
+
+        public void Init(float bulletSpeed, float fireDelay)
         {
             _bulletSpeed = bulletSpeed;
             _fireDelay = (long)(fireDelay * 1000L);
-            _asteroidMover = asteroidMover;
         }
 
         public void StartShooting()

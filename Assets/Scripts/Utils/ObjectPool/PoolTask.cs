@@ -5,7 +5,7 @@ using IPoolable = Interfaces.IPoolable;
 
 namespace Utils.ObjectPool
 {
-    public class PoolTask : MonoBehaviour
+    public class PoolTask
     {
         private readonly List<IPoolable> _freeObjects;
         private readonly List<IPoolable> _objectsInUse;
@@ -59,12 +59,12 @@ namespace Utils.ObjectPool
         {
             foreach (var poolable in _objectsInUse)
             {
-                Destroy(poolable.GameObject);
+                Object.Destroy(poolable.GameObject);
             }
 
             foreach (var poolable in _freeObjects)
             {
-                Destroy(poolable.GameObject);
+                Object.Destroy(poolable.GameObject);
             }
         }
 

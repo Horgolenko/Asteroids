@@ -2,9 +2,9 @@ using System;
 using Interfaces;
 using UnityEngine;
 
-namespace Entities.Projectile
+namespace Entities.Player
 {
-    public class ProjectileCollider : MonoBehaviour
+    public class PlayerProjectileCollider : MonoBehaviour
     {
         public Action HitWall;
         
@@ -13,6 +13,11 @@ namespace Entities.Projectile
             if (collision.gameObject.TryGetComponent(typeof(IUndestroyable), out var undestroyable))
             {
                 HitWall?.Invoke();
+            }
+            else if (collision.gameObject.TryGetComponent(typeof(IDamageable), out var damageable))
+            {
+                var enemy = (IDamageable)damageable;
+                enemy.Damage();
             }
         }
     }
