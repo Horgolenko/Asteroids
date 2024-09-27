@@ -7,8 +7,10 @@ namespace Data
     public class EnemySettings : ScriptableObject
     {
         [Header("Spawn Settings")]
-        [SerializeField] private float _spawnDelay;
+        [SerializeField] private float _initialSpawnDelay;
         [SerializeField] private ushort _maxEnemies;
+        [SerializeField] private float _spawnDelay;
+        [SerializeField] private float _spawnDelta;
         
         [Space(5)] [Header("Speeds")]
         
@@ -20,8 +22,10 @@ namespace Data
         [MinMaxRange(0, 100)] [SerializeField] private Vector2 _directionChangeFrequency;
         [MinMaxRange(0, 100)] [SerializeField] private Vector2 _fireDelay;
         
-        public float spawnDelay => _spawnDelay;
+        public float initialSpawnDelay => _initialSpawnDelay;
         public ushort maxEnemies => _maxEnemies;
+        public float spawnDelay => _spawnDelay;
+        public float spawnDelta => _spawnDelta;
         
         public Vector2 moveSpeed => _moveSpeed;
         public Vector2 bulletSpeed => _bulletSpeed;

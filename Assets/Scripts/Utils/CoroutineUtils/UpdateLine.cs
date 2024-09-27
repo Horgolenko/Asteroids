@@ -15,6 +15,7 @@ namespace Utils.CoroutineUtils
         {
             this.delta = delta;
             this.updateMethod = updateMethod;
+            lastCallTimestamp = TimeUtils.GetTimestamp();
         }
     }
 }

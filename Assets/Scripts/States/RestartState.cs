@@ -1,17 +1,16 @@
 using Data.Loaders;
-using Spawners;
+using Entities.Player;
 using Utils;
 
 namespace States
 {
     public class RestartState : AState
     {
-        private readonly SpawnProvider _spawnProvider;
         private long _timestamp;
         
-        public RestartState(StateMachine stateMachine, SpawnProvider spawnProvider) : base(stateMachine)
+        public RestartState(StateMachine stateMachine) : base(stateMachine)
         {
-            _spawnProvider = spawnProvider;
+            
         }
 
         public override void Enter()
@@ -23,7 +22,7 @@ namespace States
         {
             if (TimeUtils.GetTimestamp() - _timestamp > DataLoader.GetPlayerData().respawnDelay)
             {
-                _spawnProvider.RespawnPlayer();
+                PlayerInstance.Instance.Respawn();
                 _stateMachine.SetState<GameplayState>();
             }
         }

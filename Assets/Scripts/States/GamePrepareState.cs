@@ -14,6 +14,7 @@ namespace States
         public override void Enter()
         {
             _spawnProvider.InitialSpawn();
+            _stateMachine.SetState<GameplayState>();
         }
 
         public override void OnUpdate()

@@ -14,15 +14,15 @@ namespace Data
         [Header("Player Settings")]
         [SerializeField] private int _maxShotAmount;
         [SerializeField] private int _maxLifeAmount;
-        [SerializeField] private int _enemeisToKill;
-        [SerializeField] private int _respawnDelay;
+        [SerializeField] private int _enemiesToKill;
+        [SerializeField] private float _respawnDelay;
         
         public float maxAcceleration => _maxAcceleration;
         public float maxSpeed => _maxSpeed;
         public float bulletSpeed => _bulletSpeed;
         public int maxShotAmount => _maxShotAmount;
         public int maxLifeAmount => _maxLifeAmount;
-        public int enemeisToKill => _enemeisToKill;
-        public int respawnDelay => _respawnDelay;
+        public int enemiesToKill => _enemiesToKill;
+        public float respawnDelay => _respawnDelay;
     }
 }

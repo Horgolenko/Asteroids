@@ -1,4 +1,4 @@
-using Data.Loaders;
+using System;
 using Entities.Player;
 using UnityEngine;
 using Utils.ObjectPool;
@@ -11,14 +11,16 @@ namespace PlayerController
         [SerializeField] private PlayerProjectile _projectilePrefab;
         [SerializeField] private Transform _shotPosition;
         
-        private byte _shootsCount;
         private ObjectPool _objectPool;
         private Rigidbody _rigidbody;
 
+        public static Action ShotFired;
+        public static Action ShotDestroyed;
+        
         [Inject]
-        private void Construct(DiContainer diContainer)
+        private void Construct(ObjectPool objectPool)
         {
-            _objectPool = new ObjectPool(diContainer);
+            _objectPool = objectPool;
         }
 
         private void Awake()
@@ -26,16 +28,11 @@ namespace PlayerController
             _rigidbody = GetComponent<Rigidbody>();
         }
 
-        public bool CanFire()
-        {
-            return _shootsCount < DataLoader.GetPlayerData().maxShotAmount;
-        }
-
         public void Fire()
         {
-            _shootsCount++;
+            ShotFired?.Invoke();
             var projectile = _objectPool.GetObject(_projectilePrefab);
-            projectile.Init(_rigidbody.velocity, _shotPosition.position, transform.forward, () => _shootsCount--);
+            projectile.Init(_rigidbody.velocity, _shotPosition.position, transform.forward, () => ShotDestroyed?.Invoke());
         }
     }
 }

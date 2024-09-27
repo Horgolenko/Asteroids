@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53f67326966a3d447ac6ff34b98edbb7, type: 3}
   m_Name: EnemySettings
   m_EditorClassIdentifier: 
-  _spawnDelay: 2
-  _maxEnemies: 5
+  _initialSpawnDelay: 2
+  _maxEnemies: 0
+  _spawnDelay: 3
+  _spawnDelta: 0.1
   _moveSpeed: {x: 247.51938, y: 307.26328}
   _bulletSpeed: {x: 385.48355, y: 460.22116}
   _directionChangeFrequency: {x: 6.6770535, y: 20.921432}

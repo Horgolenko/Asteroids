@@ -10,8 +10,9 @@ namespace States
         private readonly Dictionary<Type, AState> _states = new();
         private AState _currentState;
         private UpdateLine _update;
-        private CoroutineLauncher _coroutineLauncher;
+        private readonly CoroutineLauncher _coroutineLauncher;
 
+        public AState currentState => _currentState;
         public static Action<AState> StateChanged;
         
         public StateMachine(CoroutineLauncher coroutineLauncher)

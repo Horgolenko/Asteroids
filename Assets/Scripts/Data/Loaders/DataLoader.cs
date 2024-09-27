@@ -22,14 +22,24 @@ namespace Data.Loaders
             _enemySettings = Resources.Load(EnemySettingsPath) as EnemySettings;
         }
 
-        public static float GetSpawnDelay()
+        public static float GetInitialSpawnDelay()
         {
-            return _enemySettings.spawnDelay;
+            return _enemySettings.initialSpawnDelay;
         }
 
         public static ushort GetMaxEnemies()
         {
             return _enemySettings.maxEnemies;
+        }
+        
+        public static float GetSpawnDelay()
+        {
+            return _enemySettings.spawnDelay;
+        }
+        
+        public static float GetSpawnDelta()
+        {
+            return _enemySettings.spawnDelta;
         }
         
         public static EnemyData GetEnemyData()

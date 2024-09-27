@@ -24,7 +24,7 @@ namespace PlayerController
         private Rigidbody _rigidbody;
         private UpdateLine _changeSpeedLine;
         private CoroutineLauncher _coroutineLauncher;
-        private Tweener _tweener;
+        private Tweener _rotateByMouseTweener;
         
         [Inject]
         private void Construct(CoroutineLauncher coroutineLauncher)
@@ -73,10 +73,18 @@ namespace PlayerController
             if (_mousePosition == mousePosition) return;
             
             _mousePosition = mousePosition;
-            _tweener?.Kill();
-            _tweener = transform.DOLookAt(_mousePosition, RotateDuration);
+            _rotateByMouseTweener?.Kill();
+            _rotateByMouseTweener = transform.DOLookAt(_mousePosition, RotateDuration);
         }
 
+        private readonly float _rotationSpeed = 100;
+        public void Rotate(float value)
+        {
+            if (Mathf.Abs(value) < 0.01f) return;
+
+            transform.Rotate(0, Mathf.Sign(value) * _rotationSpeed * Time.deltaTime, 0);
+        }
+        
         public void Stop()
         {
             _moveSpeed = 0;
@@ -106,7 +114,7 @@ namespace PlayerController
                 case MoveDirectionType.Backward:
                     _accelerating = true;
                     _currentSpeedDelta -= _currentSpeedDelta < 0 ? SpeedDelta : DoubleSpeedDelta;
-                    _currentSpeedDelta = Math.Sign(_currentSpeedDelta) * Math.Max(Math.Abs(_currentSpeedDelta), DataLoader.GetPlayerData().maxAcceleration);
+                    _currentSpeedDelta = Math.Sign(_currentSpeedDelta) * Math.Min(Math.Abs(_currentSpeedDelta), DataLoader.GetPlayerData().maxAcceleration);
                     break;
                 case MoveDirectionType.None:
                 {
@@ -138,6 +146,9 @@ namespace PlayerController
             {
                 Stop();
             }
+            
+            
+            Debug.Log($"_moveSpeed = {_moveSpeed}");
         }
     }
 }

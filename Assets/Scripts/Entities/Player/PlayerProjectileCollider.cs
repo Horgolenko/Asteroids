@@ -19,6 +19,7 @@ namespace Entities.Player
             {
                 var enemy = (IDamageable)damageable;
                 enemy.Damage();
+                HitEnemy?.Invoke();
             }
         }
     }

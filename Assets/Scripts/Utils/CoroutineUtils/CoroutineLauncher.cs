@@ -5,7 +5,7 @@ namespace Utils.CoroutineUtils
 {
     public class CoroutineLauncher : ITickable
     {
-        private List<UpdateLine> _lines = new(500);
+        private readonly List<UpdateLine> _lines = new(500);
 
         public void AddUpdate(UpdateLine line)
         {

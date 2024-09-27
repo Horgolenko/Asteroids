@@ -11,7 +11,9 @@ namespace Entities.Enemy
         private AsteroidMover _asteroidMover;
         private AsteroidShooter _asteroidShooter;
         private AsteroidCollider _asteroidCollider;
-        
+        private Action _onDestroy;
+
+        public static Action EnemyKilled;
         public GameObject GameObject => gameObject;
         public event Action<IPoolable> Destroyed;
 
@@ -29,8 +31,9 @@ namespace Entities.Enemy
             _asteroidCollider.ChangeDirection -= OnChangeDirection;
         }
 
-        public void Init(Vector3 position, EnemyData enemyData)
+        public void Init(Vector3 position, EnemyData enemyData, Action onDestroy)
         {
+            _onDestroy = onDestroy;
             transform.position = position;
             
             _asteroidMover.Init(enemyData.moveSpeed, enemyData.directionChangeFrequency);
@@ -42,14 +45,16 @@ namespace Entities.Enemy
         
         public void Damage()
         {
+            _onDestroy?.Invoke();
             _asteroidMover.Stop();
             _asteroidShooter.Stop();
+            EnemyKilled?.Invoke();
             Destroyed?.Invoke(this);
         }
         
         public void Reset()
         {
-            transform.rotation = Quaternion.identity;
+            
         }
         
         private void OnChangeDirection(Vector3 normal)

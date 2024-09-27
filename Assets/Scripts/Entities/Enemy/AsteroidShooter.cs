@@ -1,4 +1,3 @@
-using System;
 using Entities.Projectile;
 using UnityEngine;
 using Utils.CoroutineUtils;
@@ -29,6 +28,11 @@ namespace Entities.Enemy
         private void Awake()
         {
             _asteroidMover = GetComponent<AsteroidMover>();
+        }
+
+        private void OnDestroy()
+        {
+            Stop();
         }
 
         public void Init(float bulletSpeed, float fireDelay)

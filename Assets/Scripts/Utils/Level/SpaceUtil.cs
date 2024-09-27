@@ -4,7 +4,6 @@ namespace Utils.Level
 {
     public static class SpaceUtil
     {
-        private const float PlayerToProjectileSafeDistance = 3.2f;
         private const float PlayerToEnemySafeDistance = 3.8f;
         private const float EnemyToEnemySafeDistance = 3.2f;
         
@@ -16,11 +15,6 @@ namespace Utils.Level
         public static bool IsPlayerToEnemyOverlap(Vector3 selfPosition, Vector3 otherPosition)
         {
             return Vector3.Distance(selfPosition, otherPosition) < PlayerToEnemySafeDistance;
-        }
-        
-        public static bool IsPlayerToProjectileOverlap(Vector3 selfPosition, Vector3 otherPosition)
-        {
-            return Vector3.Distance(selfPosition, otherPosition) < PlayerToProjectileSafeDistance;
         }
 
         public static Vector3 GetDirection()

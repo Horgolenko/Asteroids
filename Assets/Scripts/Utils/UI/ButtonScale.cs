@@ -1,11 +1,9 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Utils.UI
 {
-    [RequireComponent(typeof(Button))]
     public class ButtonScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         private const float Duration = 0.2f;
