@@ -7,6 +7,7 @@ namespace Entities.Player
     public class PlayerProjectileCollider : MonoBehaviour
     {
         public Action HitWall;
+        public Action HitEnemy;
         
         private void OnCollisionEnter(Collision collision)
         {

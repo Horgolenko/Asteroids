@@ -14,6 +14,11 @@ namespace Entities.Projectile
             {
                 HitWall?.Invoke();
             }
+            else if (collision.gameObject.TryGetComponent(typeof(IDamageable), out var damageable))
+            {
+                var player = (IDamageable)damageable;
+                player.Damage();
+            }
         }
     }
 }

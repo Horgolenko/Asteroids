@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxAcceleration: 100
   _maxSpeed: 800
-  _bulletSpeed: 250
+  _bulletSpeed: 400
   _maxShotAmount: 5
   _maxLifeAmount: 3
   _enemeisToKill: 25

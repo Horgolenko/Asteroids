@@ -13,8 +13,9 @@ namespace Utils.Level
         public Vector3 GetPosition()
         {
             var x = Random.Range(lowLeftPoint.x, topRightPoint.x);
+            var y = lowLeftPoint.y;
             var z = Random.Range(lowLeftPoint.z, topRightPoint.z);
-            return new Vector3(x, 1.5f, z);
+            return new Vector3(x, y, z);
         }
     }
 }

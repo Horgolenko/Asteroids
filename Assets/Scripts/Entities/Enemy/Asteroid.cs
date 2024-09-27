@@ -20,7 +20,7 @@ namespace Entities.Enemy
             _asteroidMover = GetComponent<AsteroidMover>();
             _asteroidShooter = GetComponent<AsteroidShooter>();
             
-            _asteroidCollider = GetComponentInChildren<AsteroidCollider>();
+            _asteroidCollider = GetComponent<AsteroidCollider>();
             _asteroidCollider.ChangeDirection += OnChangeDirection;
         }
 

@@ -66,7 +66,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FresnelPower: 0.89
+    - _FresnelPower: 5.42
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -82,5 +82,5 @@ Material:
     m_Colors:
     - _Color: {r: 0, g: 1.4290932, b: 7.3772106, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ScrollDirection: {r: 0.2, g: 0.2, b: 0.2, a: 0}
+    - _ScrollDirection: {r: 0.2, g: 0.2, b: 0.2, a: 0.2}
   m_BuildTextureStacks: []

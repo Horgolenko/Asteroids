@@ -8,12 +8,12 @@ namespace Game
     {
         private void Start()
         {
-            StateMachine.OnStateChanged += OnStateChanged;
+            StateMachine.StateChanged += OnStateChanged;
         }
 
         private void OnDestroy()
         {
-            StateMachine.OnStateChanged -= OnStateChanged;
+            StateMachine.StateChanged -= OnStateChanged;
         }
 
         private void OnStateChanged(AState state)

@@ -24,12 +24,14 @@ namespace Entities.Player
 
         private void OnEnable()
         {
-            _projectileCollider.HitWall += OnHitWall;
+            _projectileCollider.HitWall += OnHit;
+            _projectileCollider.HitEnemy += OnHit;
         }
 
         private void OnDisable()
         {
-            _projectileCollider.HitWall -= OnHitWall;
+            _projectileCollider.HitWall -= OnHit;
+            _projectileCollider.HitEnemy -= OnHit;
         }
 
         public void Reset()
@@ -41,12 +43,11 @@ namespace Entities.Player
         {
             _onDestroy = onDestroy;
             transform.position = position;
-            Debug.Log($"transform.position = {transform.position}");
             _projectileMover.Init(velocity.magnitude + DataLoader.GetPlayerData().bulletSpeed, direction);
             _projectileMover.StartMoving();
         }
         
-        private void OnHitWall()
+        private void OnHit()
         {
             _onDestroy?.Invoke();
             _projectileMover.Stop();

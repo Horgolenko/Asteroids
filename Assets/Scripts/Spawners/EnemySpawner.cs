@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Data.Loaders;
+using Entities;
 using Entities.Enemy;
+using Entities.Player;
 using UnityEngine;
 using Utils.Level;
 using Utils.ObjectPool;
@@ -12,17 +14,23 @@ namespace Spawners
     public class EnemySpawner : MonoBehaviour
     {
         [SerializeField] private Asteroid _asteroidPrefab;
-        [HideInInspector]
-        [SerializeField] private SpawnSpace[] _spawnSpaces;
 
         private ushort _enemiesAmount;
+        private PlayerInstance _player;
         private ObjectPool _objectPool;
+        private SpawnProvider _spawnProvider;
         private readonly List<Asteroid> _enemies = new();
 
         [Inject]
-        private void Construct(ObjectPool objectPool)
+        private void Construct(ObjectPool objectPool, PlayerInstance player)
         {
             _objectPool = objectPool;
+            _player = player;
+        }
+
+        public void Init(SpawnProvider spawnProvider)
+        {
+            _spawnProvider = spawnProvider;
         }
         
         public void InitialSpawn()
@@ -50,15 +58,15 @@ namespace Spawners
 
         private Vector3 GetSpawnPosition()
         {
-            var index = Random.Range(0, _spawnSpaces.Length);
             Vector3 result;
             while (true)
             {
-                result = _spawnSpaces[index].GetPosition();
+                result = _spawnProvider.GetSpawnPosition();
                 bool isUnique = true;
                 for (int i = 0; i < _enemies.Count; i++)
                 {
-                    if (SpaceUtil.IsOverlap(result, _enemies[i].transform.position))
+                    if (SpaceUtil.IsEnemyToEnemyOverlap(result, _enemies[i].transform.position) ||
+                        SpaceUtil.IsPlayerToEnemyOverlap(result, _player.transform.position))
                     {
                         isUnique = false;
                         break;
@@ -70,18 +78,18 @@ namespace Spawners
             
             return result;
         }
-        
-#if UNITY_EDITOR
-        [ContextMenu("GetSpawnSpaces")]
-        private void GetAllBuildings()
+
+        public bool IsSpaceFree(Vector3 position)
         {
-            _spawnSpaces = GetBuildings<SpawnSpace>();
+            for (int i = 0; i < _enemies.Count; i++)
+            {
+                if (SpaceUtil.IsPlayerToEnemyOverlap(position, _enemies[i].transform.position))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
-        
-        private T[] GetBuildings<T>() where T : MonoBehaviour
-        {
-            return FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        }
-#endif
     }
 }

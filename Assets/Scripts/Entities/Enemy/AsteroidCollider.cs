@@ -18,6 +18,11 @@ namespace Entities.Enemy
             {
                 ChangeDirection?.Invoke(collision.contacts[0].normal);
             }
+            else if (collision.gameObject.TryGetComponent(typeof(IDamageable), out var damageable))
+            {
+                var player = (IDamageable)damageable;
+                player.Damage();
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace States
         private UpdateLine _update;
         private CoroutineLauncher _coroutineLauncher;
 
-        public static Action<AState> OnStateChanged;
+        public static Action<AState> StateChanged;
         
         public StateMachine(CoroutineLauncher coroutineLauncher)
         {
@@ -45,7 +45,7 @@ namespace States
             _currentState = _states[typeof(T)];
             _currentState.Enter();
 
-            OnStateChanged?.Invoke(_currentState);
+            StateChanged?.Invoke(_currentState);
         }
 
         private void Update()

@@ -1,4 +1,4 @@
-using Data.Loaders;
+using Entities.Player;
 using Game;
 using Spawners;
 using States;
@@ -12,14 +12,15 @@ namespace Infrastructure
 {
     public class BootstrapInstaller : MonoInstaller
     {
-        [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private SpawnProvider _spawnProvider;
         [SerializeField] private SwitchUI _switchUI;
         [SerializeField] private GameProvider _gameProvider;
         
         public override void InstallBindings()
         {
             _gameProvider.Load();
-
+            _spawnProvider.Init(Container);
+            
             var objectPool = new ObjectPool(Container);
             Container.Bind<ObjectPool>().FromInstance(objectPool).AsSingle();
             
@@ -31,17 +32,20 @@ namespace Infrastructure
             Container.Bind<ITickable>().To<CoroutineLauncher>().FromResolve();
 
             Container.Bind<GameProvider>().FromInstance(_gameProvider).AsSingle();
+            Container.Bind<PlayerInstance>().FromComponentInHierarchy().AsSingle().Lazy();
             
             InitStateMachine(stateMachine);
         }
         
         private void InitStateMachine(StateMachine gameStateMachine)
         {
-            gameStateMachine.AddState(new GameplayState(gameStateMachine, _enemySpawner));
+            gameStateMachine.AddState(new GamePrepareState(gameStateMachine, _spawnProvider));
+            gameStateMachine.AddState(new GameplayState(gameStateMachine));
+            gameStateMachine.AddState(new RestartState(gameStateMachine, _spawnProvider));
             gameStateMachine.AddState(new WinState(gameStateMachine, _switchUI));
             gameStateMachine.AddState(new LoseState(gameStateMachine, _switchUI));
             
-            gameStateMachine.SetState<GameplayState>();
+            gameStateMachine.SetState<GamePrepareState>();
         }
     }
 }
