@@ -20,7 +20,6 @@ namespace Entities.Abstract
             if (!_active) return;
             
             _rigidbody.velocity = _direction * (_moveSpeed * Time.fixedDeltaTime);
-            Debug.Log($"_rigidbody.velocity = {_rigidbody.velocity}");
         }
 
         public void Init(float moveSpeed, Vector3 direction = default)

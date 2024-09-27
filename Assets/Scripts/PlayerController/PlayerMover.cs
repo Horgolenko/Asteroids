@@ -11,7 +11,8 @@ namespace PlayerController
 {
     public class PlayerMover : MonoBehaviour
     {
-        private const float SpeedDegrade = 0.75f;
+        private const float RotateDuration = 1;
+        private const float SpeedDegrade = 0.9f;
         private const float SpeedDelta = 25f;
         private const float DoubleSpeedDelta = 2 * SpeedDelta;
 
@@ -23,7 +24,8 @@ namespace PlayerController
         private Rigidbody _rigidbody;
         private UpdateLine _changeSpeedLine;
         private CoroutineLauncher _coroutineLauncher;
-
+        private Tweener _tweener;
+        
         [Inject]
         private void Construct(CoroutineLauncher coroutineLauncher)
         {
@@ -43,6 +45,7 @@ namespace PlayerController
         private void FixedUpdate()
         {
             _rigidbody.velocity = transform.forward * (_moveSpeed * Time.fixedDeltaTime);
+            _rigidbody.angularVelocity = Vector3.zero;
         }
         
         public void Move(float value)
@@ -62,12 +65,29 @@ namespace PlayerController
             }
         }
 
+        private Vector3 _mousePosition;
         public void Rotate(Vector3 mousePosition)
         {
             mousePosition = new Vector3(mousePosition.x, transform.position.y, mousePosition.z);
-            transform.DOLookAt(mousePosition, 2);
+            
+            if (_mousePosition == mousePosition) return;
+            
+            _mousePosition = mousePosition;
+            _tweener?.Kill();
+            _tweener = transform.DOLookAt(_mousePosition, RotateDuration);
         }
 
+        public void Stop()
+        {
+            _moveSpeed = 0;
+            _currentSpeedDelta = 0;
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _coroutineLauncher.RemoveUpdate(_changeSpeedLine);
+            _moving = false;
+            _accelerating = false;
+        }
+        
         private void ChangeSpeed()
         {
             CalculateCurrentAcceleration();
@@ -79,12 +99,14 @@ namespace PlayerController
             switch (_moveDirectionType)
             {
                 case MoveDirectionType.Forward:
+                    _accelerating = true;
                     _currentSpeedDelta += _currentSpeedDelta > 0 ? SpeedDelta : DoubleSpeedDelta;
-                    _currentSpeedDelta = Math.Max(_currentSpeedDelta, DataLoader.GetPlayerData().maxAcceleration);
+                    _currentSpeedDelta = Math.Min(_currentSpeedDelta, DataLoader.GetPlayerData().maxAcceleration);
                     break;
                 case MoveDirectionType.Backward:
+                    _accelerating = true;
                     _currentSpeedDelta -= _currentSpeedDelta < 0 ? SpeedDelta : DoubleSpeedDelta;
-                    _currentSpeedDelta = Math.Sign(_currentSpeedDelta) * Math.Min(Math.Abs(_currentSpeedDelta), DataLoader.GetPlayerData().maxAcceleration);
+                    _currentSpeedDelta = Math.Sign(_currentSpeedDelta) * Math.Max(Math.Abs(_currentSpeedDelta), DataLoader.GetPlayerData().maxAcceleration);
                     break;
                 case MoveDirectionType.None:
                 {
@@ -114,11 +136,7 @@ namespace PlayerController
             
             if (Math.Abs(_moveSpeed) - Math.Abs(_currentSpeedDelta) < 0)
             {
-                _moveSpeed = 0;
-                _currentSpeedDelta = 0;
-                _coroutineLauncher.RemoveUpdate(_changeSpeedLine);
-                _moving = false;
-                _accelerating = false;
+                Stop();
             }
         }
     }
