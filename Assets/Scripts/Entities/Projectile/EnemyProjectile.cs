@@ -24,11 +24,13 @@ namespace Entities.Projectile
         private void OnEnable()
         {
             _enemyProjectileCollider.HitWall += OnHitWall;
+            _enemyProjectileCollider.HitEnemy += OnHitWall;
         }
 
         private void OnDisable()
         {
             _enemyProjectileCollider.HitWall -= OnHitWall;
+            _enemyProjectileCollider.HitEnemy -= OnHitWall;
         }
 
         public void Init(float bulletSpeed, Vector3 direction)

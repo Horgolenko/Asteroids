@@ -18,7 +18,7 @@ namespace Entities.Player
         private void Awake()
         {
             _projectileMover = GetComponent<ProjectileMover>();
-            _projectileCollider = GetComponentInChildren<PlayerProjectileCollider>();
+            _projectileCollider = GetComponent<PlayerProjectileCollider>();
         }
 
         private void OnEnable()

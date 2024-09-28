@@ -17,6 +17,8 @@ namespace Entities.Player
             }
             else if (collision.gameObject.TryGetComponent(typeof(IDamageable), out var damageable))
             {
+                if (damageable is PlayerInstance) return;
+                
                 var enemy = (IDamageable)damageable;
                 enemy.Damage();
                 HitEnemy?.Invoke();

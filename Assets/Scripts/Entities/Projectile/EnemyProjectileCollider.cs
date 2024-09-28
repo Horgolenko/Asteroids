@@ -7,6 +7,7 @@ namespace Entities.Projectile
     public class EnemyProjectileCollider : MonoBehaviour
     {
         public Action HitWall;
+        public Action HitEnemy;
         
         private void OnCollisionEnter(Collision collision)
         {
@@ -18,6 +19,7 @@ namespace Entities.Projectile
             {
                 var player = (IDamageable)damageable;
                 player.Damage();
+                HitEnemy?.Invoke();
             }
         }
     }
