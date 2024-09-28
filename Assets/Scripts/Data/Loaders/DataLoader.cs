@@ -1,5 +1,6 @@
+using Enemy = Settings.Enemy;
+using Player = Settings.Player;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Data.Loaders
 {
@@ -7,53 +8,39 @@ namespace Data.Loaders
     {
         private const string PlayerDataPath = "Data/PlayerSettings";
         private const string EnemySettingsPath = "Data/EnemySettings";
+        private const string GameSettingsPath = "Data/GameSettings";
 
-        private static PlayerSettings _playerSettings;
-        private static EnemySettings _enemySettings;
-        
-        public static void Load()
+        public static Settings.Game GetGameData()
         {
-            LoadData();
-        }
-
-        private static void LoadData()
-        {
-            _playerSettings = Resources.Load(PlayerDataPath) as PlayerSettings;
-            _enemySettings = Resources.Load(EnemySettingsPath) as EnemySettings;
+            var gameSettings = Get<GameSettings>(GameSettingsPath);
+            return new Settings.Game(gameSettings.maxEnemies, gameSettings.enemiesToKill, gameSettings.maxLifeAmount);
         }
 
-        public static float GetInitialSpawnDelay()
+        public static Enemy.Base GetEnemyData()
         {
-            return _enemySettings.initialSpawnDelay;
+            var enemySettings = Get<EnemySettings>(EnemySettingsPath);
+            
+            var spawn = new Enemy.Spawn(enemySettings.initialSpawnDelay, enemySettings.spawnDelay, enemySettings.spawnDelta);
+            var movement = new Enemy.Movement(enemySettings.moveSpeed, enemySettings.directionChangeFrequency);
+            var shooting = new Enemy.Shooting(enemySettings.bulletSpeed, enemySettings.fireDelay);
+            
+            return new Enemy.Base(spawn, movement, shooting);
+        }
+        
+        public static Player.Base GetPlayerData()
+        {
+            var playerSettings = Get<PlayerSettings>(PlayerDataPath);
+            
+            var movement = new Player.Movement(playerSettings.maxAcceleration, playerSettings.maxSpeed);
+
+            var shooting = new Player.Shooting(playerSettings.bulletSpeed, playerSettings.maxShotAmount);
+            
+            return new Player.Base(playerSettings.respawnDelay, movement, shooting);
         }
 
-        public static ushort GetMaxEnemies()
+        private static T Get<T>(string path) where T : ScriptableObject
         {
-            return _enemySettings.maxEnemies;
-        }
-        
-        public static float GetSpawnDelay()
-        {
-            return _enemySettings.spawnDelay;
-        }
-        
-        public static float GetSpawnDelta()
-        {
-            return _enemySettings.spawnDelta;
-        }
-        
-        public static EnemyData GetEnemyData()
-        {
-            var moveSpeed = Random.Range(_enemySettings.moveSpeed.x, _enemySettings.moveSpeed.y);
-            var bulletSpeed = Random.Range(_enemySettings.bulletSpeed.x, _enemySettings.bulletSpeed.y);
-            var directionChangeFrequency = Random.Range(_enemySettings.directionChangeFrequency.x, _enemySettings.directionChangeFrequency.y);
-            var fireDelay = Random.Range(_enemySettings.fireDelay.x, _enemySettings.fireDelay.y);
-            return new EnemyData(moveSpeed, bulletSpeed, directionChangeFrequency, fireDelay);
-        }
-        
-        public static PlayerSettings GetPlayerData()
-        {
-            return _playerSettings;
+            return Resources.Load(path) as T;
         }
     }
 }

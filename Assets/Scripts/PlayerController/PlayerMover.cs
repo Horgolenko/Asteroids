@@ -1,5 +1,4 @@
 using System;
-using Data.Loaders;
 using DG.Tweening;
 using Enums;
 using UnityEngine;
@@ -24,7 +23,7 @@ namespace PlayerController
         private Rigidbody _rigidbody;
         private UpdateLine _changeSpeedLine;
         private CoroutineLauncher _coroutineLauncher;
-        private Tweener _rotateByMouseTweener;
+        private Tweener _tweener;
         
         [Inject]
         private void Construct(CoroutineLauncher coroutineLauncher)
@@ -73,8 +72,8 @@ namespace PlayerController
             if (_mousePosition == mousePosition) return;
             
             _mousePosition = mousePosition;
-            _rotateByMouseTweener?.Kill();
-            _rotateByMouseTweener = transform.DOLookAt(_mousePosition, RotateDuration);
+            _tweener?.Kill();
+            _tweener = transform.DOLookAt(_mousePosition, RotateDuration);
         }
 
         private readonly float _rotationSpeed = 100;
@@ -109,12 +108,12 @@ namespace PlayerController
                 case MoveDirectionType.Forward:
                     _accelerating = true;
                     _currentSpeedDelta += _currentSpeedDelta > 0 ? SpeedDelta : DoubleSpeedDelta;
-                    _currentSpeedDelta = Math.Min(_currentSpeedDelta, DataLoader.GetPlayerData().maxAcceleration);
+                    _currentSpeedDelta = Math.Min(_currentSpeedDelta, Settings.Data.player.movement.maxAcceleration);
                     break;
                 case MoveDirectionType.Backward:
                     _accelerating = true;
                     _currentSpeedDelta -= _currentSpeedDelta < 0 ? SpeedDelta : DoubleSpeedDelta;
-                    _currentSpeedDelta = Math.Sign(_currentSpeedDelta) * Math.Min(Math.Abs(_currentSpeedDelta), DataLoader.GetPlayerData().maxAcceleration);
+                    _currentSpeedDelta = Math.Sign(_currentSpeedDelta) * Math.Min(Math.Abs(_currentSpeedDelta), Settings.Data.player.movement.maxAcceleration);
                     break;
                 case MoveDirectionType.None:
                 {
@@ -137,18 +136,15 @@ namespace PlayerController
         private void CalculateCurrentSpeed()
         {
             _moveSpeed += _currentSpeedDelta;
-            if (Math.Abs(_moveSpeed) > DataLoader.GetPlayerData().maxSpeed)
+            if (Math.Abs(_moveSpeed) > Settings.Data.player.movement.maxSpeed)
             {
-                _moveSpeed = Math.Sign(_moveSpeed) * DataLoader.GetPlayerData().maxSpeed;
+                _moveSpeed = Math.Sign(_moveSpeed) * Settings.Data.player.movement.maxSpeed;
             }
             
             if (Math.Abs(_moveSpeed) - Math.Abs(_currentSpeedDelta) < 0)
             {
                 Stop();
             }
-            
-            
-            Debug.Log($"_moveSpeed = {_moveSpeed}");
         }
     }
 }

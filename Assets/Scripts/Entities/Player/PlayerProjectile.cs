@@ -39,11 +39,11 @@ namespace Entities.Player
             
         }
 
-        public void Init(Vector3 velocity, Vector3 position, Vector3 direction, Action onDestroy)
+        public void Init(Vector3 position, Vector3 direction, Action onDestroy)
         {
             _onDestroy = onDestroy;
             transform.position = position;
-            _projectileMover.Init(velocity.magnitude + DataLoader.GetPlayerData().bulletSpeed, direction);
+            _projectileMover.Init(Settings.Data.player.shooting.bulletSpeed, direction);
             _projectileMover.StartMoving();
         }
         

@@ -12,7 +12,6 @@ namespace PlayerController
         [SerializeField] private Transform _shotPosition;
         
         private ObjectPool _objectPool;
-        private Rigidbody _rigidbody;
 
         public static Action ShotFired;
         public static Action ShotDestroyed;
@@ -23,16 +22,11 @@ namespace PlayerController
             _objectPool = objectPool;
         }
 
-        private void Awake()
-        {
-            _rigidbody = GetComponent<Rigidbody>();
-        }
-
         public void Fire()
         {
             ShotFired?.Invoke();
             var projectile = _objectPool.GetObject(_projectilePrefab);
-            projectile.Init(_rigidbody.velocity, _shotPosition.position, transform.forward, () => ShotDestroyed?.Invoke());
+            projectile.Init(_shotPosition.position, transform.forward, () => ShotDestroyed?.Invoke());
         }
     }
 }

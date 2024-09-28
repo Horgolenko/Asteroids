@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Data.Loaders;
 using Entities.Enemy;
 using Entities.Player;
 using UnityEngine;
-using Utils.CoroutineUtils;
 using Utils.Level;
 using Utils.ObjectPool;
 using Zenject;
@@ -21,22 +19,19 @@ namespace Spawners
         private PlayerInstance _player;
         private ObjectPool _objectPool;
         private SpawnProvider _spawnProvider;
-        private CoroutineLauncher _coroutineLauncher;
         private readonly List<Asteroid> _enemies = new();
-        private readonly Stack<UpdateLine> _enemiesToSpawnLine = new();
 
         [Inject]
-        private void Construct(ObjectPool objectPool, PlayerInstance player, CoroutineLauncher coroutineLauncher)
+        private void Construct(ObjectPool objectPool, PlayerInstance player)
         {
             _objectPool = objectPool;
             _player = player;
-            _coroutineLauncher = coroutineLauncher;
         }
 
         public void Init(SpawnProvider spawnProvider)
         {
             _spawnProvider = spawnProvider;
-            _enemiesToKill = DataLoader.GetPlayerData().enemiesToKill;
+            _enemiesToKill = Settings.Data.game.enemiesToKill;
         }
         
         public void InitialSpawn()
@@ -46,11 +41,7 @@ namespace Spawners
         
         public void StopEnemySpawn()
         {
-            while (_enemiesToSpawnLine.Count > 0)
-            {
-                var spawnLine = _enemiesToSpawnLine.Pop();
-                _coroutineLauncher.RemoveUpdate(spawnLine);
-            }
+            StopAllCoroutines();
         }
         
         public bool IsSpaceFree(Vector3 position)
@@ -68,9 +59,9 @@ namespace Spawners
         
         private IEnumerator SpawnCoroutine()
         {
-            yield return new WaitForSecondsRealtime(DataLoader.GetInitialSpawnDelay());
+            yield return new WaitForSecondsRealtime(Settings.Data.enemy.spawn.initialSpawnDelay);
 
-            while (_currentEnemies < DataLoader.GetMaxEnemies())
+            while (_currentEnemies < Settings.Data.game.maxEnemies)
             {
                 Spawn();
             }
@@ -80,7 +71,7 @@ namespace Spawners
         {
             _currentEnemies++;
             var enemy = _objectPool.GetObject(_asteroidPrefab);
-            enemy.Init(GetSpawnPosition(), DataLoader.GetEnemyData(), OnEnemyDestroy(enemy));
+            enemy.Init(GetSpawnPosition(), Settings.Data.enemy.GetEnemyData(), OnEnemyDestroy(enemy));
             _enemies.Add(enemy);
         }
 
@@ -89,24 +80,17 @@ namespace Spawners
             return () =>
             {
                 _enemies.Remove(enemy);
-                var t = GetSpawnDelay();
-                Debug.Log($"t = {t}");
-                var spawnLine = new UpdateLine(SpawnLater, t);
-                _enemiesToSpawnLine.Push(spawnLine);
-                _coroutineLauncher.AddUpdate(spawnLine);
+                StartCoroutine(SpawnCoroutine(GetSpawnDelay()));
                 _currentEnemies--;
                 _enemiesToKill--;
             };
         }
 
-        private void SpawnLater()
+        private IEnumerator SpawnCoroutine(WaitForSeconds waitForSeconds)
         {
+            yield return waitForSeconds;
+            
             Spawn();
-            if (_enemiesToSpawnLine.Count > 0)
-            {
-                var spawnLine = _enemiesToSpawnLine.Pop();
-                _coroutineLauncher.RemoveUpdate(spawnLine);
-            }
         }
         
         private Vector3 GetSpawnPosition()
@@ -132,9 +116,12 @@ namespace Spawners
             return result;
         }
 
-        private long GetSpawnDelay()
+        private WaitForSeconds GetSpawnDelay()
         {
-            return (long)((DataLoader.GetSpawnDelay() - (DataLoader.GetPlayerData().enemiesToKill - _enemiesToKill) * DataLoader.GetSpawnDelta()) * 1000L);
+            var spawnDelay = Settings.Data.enemy.spawn.spawnDelay - (Settings.Data.game.enemiesToKill - _enemiesToKill) *
+                Settings.Data.enemy.spawn.spawnDelta;
+            
+            return new WaitForSeconds(spawnDelay);
         }
     }
 }

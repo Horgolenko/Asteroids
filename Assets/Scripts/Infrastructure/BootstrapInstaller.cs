@@ -1,4 +1,3 @@
-using Data.Loaders;
 using Entities.Player;
 using Game;
 using PlayerController.InputVariants;
@@ -22,8 +21,6 @@ namespace Infrastructure
         
         public override void InstallBindings()
         {
-            DataLoader.Load();
-
             _spawnProvider.Init();
             Container.Bind<SpawnProvider>().FromInstance(_spawnProvider).AsSingle();
             Container.Bind<PlayerInstance>().FromComponentInNewPrefab(_player).AsSingle();

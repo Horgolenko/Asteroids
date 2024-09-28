@@ -1,5 +1,4 @@
 using System;
-using Data.Loaders;
 using Entities.Enemy;
 using PlayerController;
 using States;
@@ -54,9 +53,9 @@ namespace Game
 
         private void Init()
         {
-            _currentShots = DataLoader.GetPlayerData().maxShotAmount;
-            _currentLife = DataLoader.GetPlayerData().maxLifeAmount;
-            _enemiesToKill = DataLoader.GetPlayerData().enemiesToKill;
+            _currentShots =  Settings.Data.player.shooting.maxShotAmount;
+            _currentLife = Settings.Data.game.maxLifeAmount;
+            _enemiesToKill = Settings.Data.game.enemiesToKill;
             
             ShotAmountChanged?.Invoke(_currentShots);
             LifeAmountChanged?.Invoke(_currentLife);
