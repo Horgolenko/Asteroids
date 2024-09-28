@@ -13,7 +13,7 @@ namespace Entities.Enemy
         private AsteroidCollider _asteroidCollider;
         private Action _onDestroy;
 
-        public static Action EnemyKilled;
+        public static Action<Vector3> AsteroidDestroyed;
         public GameObject GameObject => gameObject;
         public event Action<IPoolable> Destroyed;
 
@@ -48,7 +48,7 @@ namespace Entities.Enemy
             _onDestroy?.Invoke();
             _asteroidMover.Stop();
             _asteroidShooter.Stop();
-            EnemyKilled?.Invoke();
+            AsteroidDestroyed?.Invoke(transform.position);
             Destroyed?.Invoke(this);
         }
         

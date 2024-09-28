@@ -1,5 +1,4 @@
 using System;
-using Data.Loaders;
 using Entities.Projectile;
 using Interfaces;
 using UnityEngine;

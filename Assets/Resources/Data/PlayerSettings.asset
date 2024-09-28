@@ -16,6 +16,4 @@ MonoBehaviour:
   _maxSpeed: 800
   _bulletSpeed: 600
   _maxShotAmount: 5
-  _maxLifeAmount: 3
-  _enemiesToKill: 25
-  _respawnDelay: 0.5
+  _respawnDelay: 1

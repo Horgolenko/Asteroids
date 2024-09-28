@@ -33,7 +33,7 @@ namespace Game
             PlayerShooter.ShotFired += OnShotFired;
             PlayerShooter.ShotDestroyed += OnShotDestroyed;
 
-            Asteroid.EnemyKilled += OnEnemyKilled;
+            Asteroid.AsteroidDestroyed += OnEnemyKilled;
         }
 
         private void OnDestroy()
@@ -43,7 +43,7 @@ namespace Game
             PlayerShooter.ShotFired -= OnShotFired;
             PlayerShooter.ShotDestroyed -= OnShotDestroyed;
 
-            Asteroid.EnemyKilled -= OnEnemyKilled;
+            Asteroid.AsteroidDestroyed -= OnEnemyKilled;
         }
 
         public bool CanFire()
@@ -92,7 +92,7 @@ namespace Game
             ShotAmountChanged?.Invoke(_currentShots);
         }
         
-        private void OnEnemyKilled()
+        private void OnEnemyKilled(Vector3 position)
         {
             _enemiesToKill--;
             EnemiesAmountChanged?.Invoke(_enemiesToKill);

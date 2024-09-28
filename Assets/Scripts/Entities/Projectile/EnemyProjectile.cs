@@ -10,6 +10,7 @@ namespace Entities.Projectile
         private ProjectileMover _projectileMover;
         private EnemyProjectileCollider _enemyProjectileCollider;
         
+        public static Action<Vector3> ProjectileDestroyed;
         public GameObject GameObject => gameObject;
         public event Action<IPoolable> Destroyed;
 
@@ -43,6 +44,7 @@ namespace Entities.Projectile
         
         private void OnHitWall()
         {
+            ProjectileDestroyed?.Invoke(transform.position);
             _projectileMover.Stop();
             Destroyed?.Invoke(this);
         }

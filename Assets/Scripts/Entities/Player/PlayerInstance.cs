@@ -1,3 +1,4 @@
+using Animation;
 using Interfaces;
 using PlayerController;
 using Spawners;
@@ -9,9 +10,11 @@ namespace Entities.Player
 {
     public class PlayerInstance : MonoBehaviour, IDamageable
     {
+        private StateMachine _stateMachine;
         private SpawnProvider _spawnProvider;
         private PlayerMover _playerMover;
-        private StateMachine _stateMachine;
+        private PlayerDissolve _playerDissolve;
+        private MeshCollider _meshCollider;
         
         public static PlayerInstance Instance;
         
@@ -26,19 +29,24 @@ namespace Entities.Player
         private void Awake()
         {
             _playerMover = GetComponent<PlayerMover>();
+            _playerDissolve = GetComponent<PlayerDissolve>();
+            _meshCollider = GetComponent<MeshCollider>();
             Instance = this;
         }
         
         public void Damage()
         {
+            _meshCollider.enabled = false;
             _playerMover.Stop();
             _stateMachine.SetState<RestartState>();
-            gameObject.SetActive(false);
+            _playerDissolve.Animate(() => gameObject.SetActive(false));
         }
         
         public void Respawn()
         {
             transform.position = _spawnProvider.GetRespawnPosition();
+            _playerDissolve.ResetAnimation();
+            _meshCollider.enabled = true;
             gameObject.SetActive(true);
         }
     }

@@ -46,7 +46,12 @@ namespace PlayerController
             _rigidbody.velocity = transform.forward * (_moveSpeed * Time.fixedDeltaTime);
             _rigidbody.angularVelocity = Vector3.zero;
         }
-        
+
+        private void OnDestroy()
+        {
+            _tweener?.Kill();
+        }
+
         public void Move(float value)
         {
             _moveDirectionType = value switch
@@ -86,6 +91,7 @@ namespace PlayerController
         
         public void Stop()
         {
+            _tweener?.Kill();
             _moveSpeed = 0;
             _currentSpeedDelta = 0;
             _rigidbody.velocity = Vector3.zero;
