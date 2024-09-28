@@ -45,6 +45,7 @@ namespace Entities.Player
         public void Respawn()
         {
             transform.position = _spawnProvider.GetRespawnPosition();
+            transform.rotation = Quaternion.identity;
             _playerDissolve.ResetAnimation();
             _meshCollider.enabled = true;
             gameObject.SetActive(true);

@@ -7,7 +7,8 @@ namespace PlayerController.InputVariants
     public class AndroidInput : AInput
     {
         private bool _pressed;
-        private GamepadDirection _direction;
+        private GamepadDirection _movementDirection;
+        private GamepadDirection _rotationDirection;
         private Touch _touch;
         
         public AndroidInput()
@@ -24,12 +25,12 @@ namespace PlayerController.InputVariants
         {
             if (!_pressed) return 0;
             
-            if (_direction == GamepadDirection.Right)
+            if (_rotationDirection == GamepadDirection.Right)
             {
                 return 1;
             }
             
-            if (_direction == GamepadDirection.Left)
+            if (_rotationDirection == GamepadDirection.Left)
             {
                 return -1;
             }
@@ -41,12 +42,12 @@ namespace PlayerController.InputVariants
         {
             if (!_pressed) return 0;
             
-            if (_direction == GamepadDirection.Up)
+            if (_movementDirection == GamepadDirection.Up)
             {
                 return 1;
             }
 
-            if (_direction == GamepadDirection.Down)
+            if (_movementDirection == GamepadDirection.Down)
             {
                 return -1;
             }
@@ -67,7 +68,31 @@ namespace PlayerController.InputVariants
         
         private void OnButtonPressed(GamepadDirection direction, bool pressed)
         {
-            _direction = direction;
+            if (pressed)
+            {
+                switch (direction)
+                {
+                    case GamepadDirection.Up or GamepadDirection.Down:
+                        _movementDirection = direction;
+                        break;
+                    case GamepadDirection.Left or GamepadDirection.Right:
+                        _rotationDirection = direction;
+                        break;
+                }
+            }
+            else
+            {
+                switch (direction)
+                {
+                    case GamepadDirection.Up or GamepadDirection.Down:
+                        _movementDirection = GamepadDirection.None;
+                        break;
+                    case GamepadDirection.Left or GamepadDirection.Right:
+                        _rotationDirection = GamepadDirection.None;
+                        break;
+                }
+            }
+            
             _pressed = pressed;
         }
     }

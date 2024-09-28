@@ -8,7 +8,6 @@ namespace UI.Menus
 {
     public class SettingsUI : ABaseMenu
     {
-        [SerializeField] private Button _openButton;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _continueButton;
@@ -16,23 +15,12 @@ namespace UI.Menus
         
         protected override void Awake()
         {
-            _openButton.onClick.AddListener(OnOpenClicked());
             _closeButton.onClick.AddListener(OnCloseClicked());
             _backButton.onClick.AddListener(OnCloseClicked());
             _continueButton.onClick.AddListener(OnCloseClicked());
             _mainMenuButton.onClick.AddListener(OnMainMenuClicked());
             
             base.Awake();
-        }
-
-        private UnityAction OnOpenClicked()
-        {
-            void Open()
-            {
-                _menuAnimator.Show();
-            }
-
-            return Open;
         }
         
         private UnityAction OnCloseClicked()

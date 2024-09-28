@@ -14,6 +14,7 @@ namespace Animation
         private Action _onComplete;
         private MeshRenderer _meshRenderer;
         private VisualEffect _visualEffect;
+        private Coroutine _dissolveCoroutine;
         private readonly WaitForSeconds _waitForRefresh = new(0.04f);
 
         private void Awake()
@@ -27,7 +28,7 @@ namespace Animation
         {
             _onComplete = onComplete;
             _visualEffect.Play();
-            StartCoroutine(DissolveCoroutine());
+            _dissolveCoroutine = StartCoroutine(DissolveCoroutine());
         }
 
         private IEnumerator DissolveCoroutine()
@@ -45,6 +46,11 @@ namespace Animation
 
         public void ResetAnimation()
         {
+            if (_dissolveCoroutine != null)
+            {
+                StopCoroutine(_dissolveCoroutine);
+                _dissolveCoroutine = null;
+            }
             _visualEffect.Stop();
             _material.SetFloat(DissolveAmount, 0);
         }

@@ -24,6 +24,7 @@ namespace UI.Menus
             for (int i = 0; i < menus.Length; i++)
             {
                 var menu = Instantiate(menus[i].menu, transform);
+                menu.Init(this);
                 if (menu is ABaseMenu baseMenu)
                 {
                     _menus[menus[i].menuType] = baseMenu;

@@ -2,9 +2,10 @@ namespace Enums
 {
     public enum GamepadDirection
     {
-        Up,
+        Up = 1,
         Down,
         Left,
-        Right
+        Right,
+        None
     }
 }
